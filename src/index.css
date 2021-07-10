@@ -82,3 +82,8 @@ html,
 .forgot-password a {
   color: #167bff;
 }
+button {
+  margin-top: 10px;
+  margin-left: 30%;
+}
+
