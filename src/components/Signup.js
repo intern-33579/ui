@@ -11,23 +11,27 @@ export default function SignUp(props) {
   async function handleSubmit(event) {
     const url = "https://intern-335791.herokuapp.com/";
     event.preventDefault();
-    if (otpSent) {
-      let loginUrl = `${url}signup/${email}/${otp}`;
-      await axios.get(loginUrl).then((res) => {
+    if (!otpSent) {
+      let signUpUrl = `${url}signup/${email}`;
+      await axios.get(signUpUrl).then((res) => {
         if (res.data.status === "true") {
           console.log(res.data.token);
+          setOtpSent(true);
+          alert("OTP sent to your email");
         } else {
-          alert("Wrong OTP");
+          alert("User Already exist");
         }
       });
     } else {
-      let otpSendUrl = `${url}otp/${email}/${otp}`;
-      console.log("yes");
-      await axios.get(otpSendUrl).then((res) => {
+      let loginUrl = `${url}login/${email}/${otp}`;
+      await axios.get(loginUrl).then((res) => {
         if (res.data.status === "true") {
-          setOtpSent(true);
+          console.log(res.data.token);
+          localStorage.setItem("token", res.data.token);
+          props.history.push("/home");
+          return;
         } else {
-          alert("User Already exist");
+          alert("Wrong OTP");
         }
       });
     }
@@ -72,7 +76,7 @@ export default function SignUp(props) {
         size="lg"
         disabled={!validateForm()}
       >
-        {otpSent ? "Submit" : "Send OTP"}
+        {otpSent ? "Submit" : "Sign Up"}
       </button>
     </form>
   );
